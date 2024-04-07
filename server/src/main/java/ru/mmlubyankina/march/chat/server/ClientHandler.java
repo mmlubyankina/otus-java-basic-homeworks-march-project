@@ -10,34 +10,39 @@ public class ClientHandler {
     private Socket socket;
     private DataInputStream in;
     private DataOutputStream out;
-    private String username;
-    private static int usersCounter = 0;
-
-    private void generateUsername(){
-        usersCounter++;
-        this.username = "user" + usersCounter;
+    private String nickname;
+    public String getNickname() {
+        return nickname;
     }
 
+
     public ClientHandler(Server server, Socket socket) throws IOException {
-        this.server = server;
-        this.socket = socket;
-        this.in = new DataInputStream(socket.getInputStream());
-        this.out = new DataOutputStream(socket.getOutputStream());
-        this.generateUsername();
+    this.server = server;
+    this.socket = socket;
+    this.in = new DataInputStream(socket.getInputStream());
+    this.out = new DataOutputStream(socket.getOutputStream());
+    this.nickname = nickname;
+
+        sendMessage("Введите ваш nickname: ");
+        this.nickname = in.readUTF();
 
         new Thread(() -> {
             try {
                 System.out.println("Подключился новый клиент.");
+                sendMessage("Ваш nickname: " + nickname);
                 while (true) {
                     String message = in.readUTF();
-                    if (message.startsWith("/")){
-                        if (message.startsWith("/exit")){
+                    if (message.startsWith("/")) {
+                        if (message.startsWith("/exit")) {
                             disconnect();
                             break;
                         }
+                        if (message.startsWith("/w ")){
+                            sendPersonalMessage(message);
+                        }
                         continue;
                     }
-                    server.broadcastMessage(username + ": " + message);
+                    server.broadcastMessage(nickname + ": " + message);
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -53,6 +58,17 @@ public class ClientHandler {
             out.writeUTF(msg);
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    public void sendPersonalMessage(String msg) {
+        try {
+            String[] words = msg.split(" ", 3);
+            String recipient = words[1];
+            String messageToSend = words[2];
+            server.personalMessage(this, recipient, messageToSend);
+        } catch (Exception e){
+            System.out.println("Ошибка при отправке личного сообщения.");
         }
     }
 
