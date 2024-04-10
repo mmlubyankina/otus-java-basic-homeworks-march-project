@@ -12,10 +12,9 @@ public class ClientApplication {
         try (
                 Socket socket = new Socket("localhost", 8189);
                 DataInputStream in = new DataInputStream(socket.getInputStream());
-                DataOutputStream out = new DataOutputStream(socket.getOutputStream());
-        ){
-            System.out.println("Подключились к серверу.");
-
+                DataOutputStream out = new DataOutputStream(socket.getOutputStream())
+        ) {
+            System.out.println("Подключились к серверу");
             new Thread(() -> {
                 try {
                     while (true) {
@@ -23,18 +22,17 @@ public class ClientApplication {
                         System.out.println(inMessage);
                     }
                 } catch (IOException e) {
-                    throw new RuntimeException(e);
+                    e.printStackTrace();
                 }
             }).start();
-
-            while (true){
-                String message = scanner.nextLine();
-                out.writeUTF(message);
-                if(message.equals("/exit")){
+            while (true) {
+                String msg = scanner.nextLine();
+                out.writeUTF(msg);
+                if (msg.equals("/exit")) {
                     break;
                 }
             }
-        } catch (IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }

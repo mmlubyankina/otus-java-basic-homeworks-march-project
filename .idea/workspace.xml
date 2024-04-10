@@ -4,9 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="6995a4ad-995d-4b85-a527-af7a73691e46" name="Changes" comment="First commit">
-      <change beforePath="$PROJECT_DIR$/.idea/dbnavigator.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dbnavigator.xml" afterDir="false" />
+    <list default="true" id="6995a4ad-995d-4b85-a527-af7a73691e46" name="Changes" comment="ДЗ по 22 уроку выполнено">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/main/java/ru/mmlubyankina/march/chat/client/ClientApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/ru/mmlubyankina/march/chat/client/ClientApplication.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/server/src/main/java/ru/mmlubyankina/march/chat/server/ClientHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/ru/mmlubyankina/march/chat/server/ClientHandler.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/server/src/main/java/ru/mmlubyankina/march/chat/server/Server.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/ru/mmlubyankina/march/chat/server/Server.java" afterDir="false" />
     </list>
@@ -18,14 +18,16 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
+        <option value="Interface" />
         <option value="Class" />
+        <option value="Enum" />
       </list>
     </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="master" />
+        <entry key="$PROJECT_DIR$" value="lesson22" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -56,6 +58,9 @@
   }
 }</component>
   <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\kosti\IdeaProjects\otus-java-basic-homeworks-march-project\client\src\main\java\ru\mmlubyankina\march\chat\client" />
+    </key>
     <key name="CopyClassDialog.RECENTS_KEY">
       <recent name="ru.mmlubyankina.march.chat.server" />
       <recent name="ru.mmlubyankina.march.chat.client" />
@@ -64,13 +69,6 @@
   <component name="RunManager" selected="Application.ClientApplication">
     <configuration name="ClientApplication" type="Application" factoryName="Application" singleton="false">
       <option name="MAIN_CLASS_NAME" value="ru.mmlubyankina.march.chat.client.ClientApplication" />
-      <module name="client" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="ClientApplication2" type="Application" factoryName="Application" singleton="false">
-      <option name="MAIN_CLASS_NAME" value="ru.mmlubyankina.march.chat.client.ClientApplication2" />
       <module name="client" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -89,32 +87,15 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="ServerApplication2" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="ru.mmlubyankina.march.chat.server.ServerApplication2" />
-      <module name="server" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="ru.mmlubyankina.march.chat.server.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <list>
       <item itemvalue="Application.ClientApplication" />
-      <item itemvalue="Application.ClientApplication2" />
       <item itemvalue="Application.ServerApplication" />
-      <item itemvalue="Application.ServerApplication2" />
     </list>
     <recent_temporary>
       <list>
         <item itemvalue="Application.ServerApplication" />
-        <item itemvalue="Application.ServerApplication2" />
         <item itemvalue="Application.ServerApplication" />
         <item itemvalue="Application.ServerApplication" />
-        <item itemvalue="Application.ServerApplication2" />
       </list>
     </recent_temporary>
   </component>
@@ -134,7 +115,14 @@
       <option name="project" value="LOCAL" />
       <updated>1711911577172</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="ДЗ по 22 уроку выполнено">
+      <created>1712505443045</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1712505443045</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -148,7 +136,7 @@
                   <entry key="branch">
                     <value>
                       <list>
-                        <option value="lesson22" />
+                        <option value="lesson23_orig" />
                       </list>
                     </value>
                   </entry>
@@ -162,6 +150,7 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="First commit" />
-    <option name="LAST_COMMIT_MESSAGE" value="First commit" />
+    <MESSAGE value="ДЗ по 22 уроку выполнено" />
+    <option name="LAST_COMMIT_MESSAGE" value="ДЗ по 22 уроку выполнено" />
   </component>
 </project>
