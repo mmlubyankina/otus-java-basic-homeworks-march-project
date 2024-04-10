@@ -11,38 +11,24 @@ public class ClientHandler {
     private DataInputStream in;
     private DataOutputStream out;
     private String nickname;
+    private Roles userRole;
+
+
+
     public String getNickname() {
         return nickname;
     }
 
-
     public ClientHandler(Server server, Socket socket) throws IOException {
-    this.server = server;
-    this.socket = socket;
-    this.in = new DataInputStream(socket.getInputStream());
-    this.out = new DataOutputStream(socket.getOutputStream());
-    this.nickname = nickname;
-
-        sendMessage("Введите ваш nickname: ");
-        this.nickname = in.readUTF();
-
+        this.server = server;
+        this.socket = socket;
+        this.in = new DataInputStream(socket.getInputStream());
+        this.out = new DataOutputStream(socket.getOutputStream());
         new Thread(() -> {
             try {
-                System.out.println("Подключился новый клиент.");
-                sendMessage("Ваш nickname: " + nickname);
-                while (true) {
-                    String message = in.readUTF();
-                    if (message.startsWith("/")) {
-                        if (message.startsWith("/exit")) {
-                            disconnect();
-                            break;
-                        }
-                        if (message.startsWith("/w ")){
-                            sendPersonalMessage(message);
-                        }
-                        continue;
-                    }
-                    server.broadcastMessage(nickname + ": " + message);
+                System.out.println("Подключился новый клиент");
+                if (tryToAuthenticate()) {
+                    communicate();
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -52,6 +38,88 @@ public class ClientHandler {
         }).start();
     }
 
+    private void communicate() throws IOException {
+        while (true) {
+            String msg = in.readUTF();
+            if (msg.startsWith("/")) {
+                if (msg.startsWith("/exit")) {
+                    break;
+                }
+                // /kick username
+                if (msg.startsWith("/kick ")) {
+                    try {
+                        kickUsername(msg);
+                    }
+                    finally {
+                        continue;
+                    }
+                }
+                continue;
+            }
+            server.broadcastMessage(nickname + ": " + msg);
+        }
+    }
+
+    private boolean tryToAuthenticate() throws IOException {
+        while (true) {
+            String msg = in.readUTF();
+            if (msg.startsWith("/auth ")) {
+                String[] tokens = msg.split(" ");
+                if (tokens.length != 3) {
+                    sendMessage("Некорректный формат запроса");
+                    continue;
+                }
+                String login = tokens[1];
+                String password = tokens[2];
+                String nickname = server.getAuthenticationService().getNicknameByLoginAndPassword(login, password);
+                if (nickname == null) {
+                    sendMessage("Неправильный логин/пароль");
+                    continue;
+                }
+                if (server.isNicknameBusy(nickname)) {
+                    sendMessage("Указанная учетная запись уже занята. Попробуйте зайти позднее");
+                    continue;
+                }
+                this.nickname = nickname;
+                server.subscribe(this);
+                sendMessage(nickname + ", добро пожаловать в чат!");
+                return true;
+            } else if (msg.startsWith("/register ")) {
+                // /register login pass nickname
+                String[] tokens = msg.split(" ");
+                if (tokens.length != 4) {
+                    sendMessage("Некорректный формат запроса");
+                    continue;
+                }
+                String login = tokens[1];
+                String password = tokens[2];
+                String nickname = tokens[3];
+                if (server.getAuthenticationService().isLoginAlreadyExist(login)) {
+                    sendMessage("Указанный логин уже занят");
+                    continue;
+                }
+                if (server.getAuthenticationService().isNicknameAlreadyExist(nickname)) {
+                    sendMessage("Указанный никнейм уже занят");
+                    continue;
+                }
+                if (!server.getAuthenticationService().register(login, password, nickname)) {
+                    sendMessage("Не удалось пройти регистрацию");
+                    continue;
+                }
+                this.nickname = nickname;
+                server.subscribe(this);
+                server.getAuthenticationService().setRoles();
+                sendMessage("Вы успешно зарегистрировались! " + nickname + ", добро пожаловать в чат!");
+                this.userRole = server.getAuthenticationService().getUserRole(this, nickname);
+                //sendMessage("Ваша роль: " + server.getAuthenticationService().getUserRole(nickname));
+                return true;
+            } else if (msg.equals("/exit")) {
+                return false;
+            } else {
+                sendMessage("Вам необходимо авторизоваться");
+            }
+        }
+    }
 
     public void sendMessage(String msg) {
         try {
@@ -61,46 +129,71 @@ public class ClientHandler {
         }
     }
 
-    public void sendPersonalMessage(String msg) {
-        try {
-            String[] words = msg.split(" ", 3);
-            String recipient = words[1];
-            String messageToSend = words[2];
-            server.personalMessage(this, recipient, messageToSend);
-        } catch (Exception e){
-            System.out.println("Ошибка при отправке личного сообщения.");
-        }
-    }
 
-
-    public void disconnect(){
-
+    public void disconnect() {
         server.unsubscribe(this);
-
         try {
-            if(in != null) {
+            if (in != null) {
                 in.close();
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         try {
-            if(out != null) {
+            if (out != null) {
                 out.close();
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         try {
-            if(socket != null && !socket.isClosed()) {
+            if (socket != null && !socket.isClosed()) {
                 socket.close();
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
+
+
+    public void kickUsername(String msg) {
+        String[] tokens = msg.split(" ");
+        String userForKick = tokens[1];
+        if (this.userRole.isAdminRole()){
+            System.out.println("удаляем пользователя: " + userForKick + ". Удаляет: " + this.userRole);
+            server.kickUser(userForKick);
+        }
+        else {
+            sendMessage("Недостаточно прав для выбранной операции.");
+        }
+    }
+
+
+//    public void disconnectForKick() {
+//        server.unsubscribe(this);
+//        try {
+//            if (in != null) {
+//                in.close();
+//            }
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        try {
+//            if (out != null) {
+//                out.close();
+//            }
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        try {
+//            if (socket != null && !socket.isClosed()) {
+//                socket.close();
+//            }
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//    }
 
 
 }
